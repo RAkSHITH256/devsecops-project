@@ -1,43 +1,24 @@
-version: '3.8'
+version: '3'
 
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: devops_mongo
+  mongo:
+    image: mongo
+    container_name: mongo
     ports:
       - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    networks:
-      - devops_network
 
   backend:
     build: ./backend
-    container_name: devops_backend
+    container_name: backend
     ports:
       - "5000:5000"
-    environment:
-      - PORT=5000
-      - MONGO_URI=mongodb://mongodb:27017/taskmanager
-      - JWT_SECRET=supersecretjwtkey_change_in_production
     depends_on:
-      - mongodb
-    networks:
-      - devops_network
+      - mongo
 
   frontend:
     build: ./frontend
-    container_name: devops_frontend
+    container_name: frontend
     ports:
-      - "80:80"
+      - "3000:3000"
     depends_on:
       - backend
-    networks:
-      - devops_network
-
-volumes:
-  mongo_data:
-
-networks:
-  devops_network:
-    driver: bridge
